@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { View, Text } from 'react-native';
 import { initHealthConnect } from './src/health/healthConnectInit';
-
+import { initBackgroundTask } from './src/background/backgroundTask';
 
 export default function App() {
   useEffect(() => {
@@ -9,8 +9,8 @@ export default function App() {
       try {
         const initialized = await initHealthConnect();
         if (initialized) {
-          
-          console.log('✅ App initialized successfully');
+          initBackgroundTask();
+          console.log('🚀 App initialized successfully');
         }
       } catch (error) {
         console.error('❌ App init error:', error);
@@ -22,7 +22,7 @@ export default function App() {
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Health Connect Background Sync ✅</Text>
+      <Text style={{color:'green'}}>Health Connect Background Sync ✅</Text>
     </View>
   );
 }

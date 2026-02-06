@@ -10,7 +10,7 @@ export async function initHealthConnect() {
 
     return true;
   } catch (error) {
-    console.error('❌ Health Connect init error:', error);
+    console.error('❌ Health Connect not initialized', error);
     return false;
   }
 }

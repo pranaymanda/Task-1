@@ -7,6 +7,10 @@ export async function fetchSteps() {
   try {
     const permissions = [
       {
+      accessType: 'read',
+      recordType: 'BackgroundAccessPermission',
+    },
+      {
         accessType: 'read',
         recordType: 'Steps',
       },
@@ -17,8 +21,8 @@ export async function fetchSteps() {
       console.warn('⚠️ Steps permission not granted');
       return [];
     }
-
-    const endTime = new Date();
+    // Fetch steps from the last 15 minutes
+    const endTime = new Date();  
     const startTime = new Date();
     startTime.setMinutes(endTime.getMinutes() - 15);
 
@@ -29,6 +33,8 @@ export async function fetchSteps() {
         endTime: endTime.toISOString(),
       },
     });
+
+    console.log(`📥 Fetched ${response?.records?.length || 0} steps records from Health Connect`);
 
     return response?.records || [];
   } catch (error) {
