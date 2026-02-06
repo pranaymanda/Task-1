@@ -1,28 +1,28 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react';
+import { View, Text } from 'react-native';
+import { initHealthConnect } from './src/health/healthConnectInit';
 
-const App = () => {
+
+export default function App() {
+  useEffect(() => {
+    async function initApp() {
+      try {
+        const initialized = await initHealthConnect();
+        if (initialized) {
+          
+          console.log('✅ App initialized successfully');
+        }
+      } catch (error) {
+        console.error('❌ App init error:', error);
+      }
+    }
+
+    initApp();
+  }, []);
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>App</Text>
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>Health Connect Background Sync ✅</Text>
     </View>
-  )
+  );
 }
-
-export default App
-
-const styles = StyleSheet.create({
-  container:{
-      flex:1,
-      justifyContent:'center',
-      alignItems:'center'
-
-
-  },
-  text:{
-      fontSize:20,
-      fontWeight:'bold',
-      color:'blue'
-  }
-
-})
