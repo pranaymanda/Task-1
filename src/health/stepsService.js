@@ -1,15 +1,28 @@
 import {
   readRecords,
   requestPermission,
+  getGrantedPermissions,
 } from 'react-native-health-connect';
+
+export const checkBackgroundAccess = async () => {
+  const permissions = await getGrantedPermissions();
+  const hasBackgroundAccess = permissions.some(
+    (permission) =>
+      permission.accessType === 'read' &&
+      permission.recordType === 'BackgroundAccessPermission'
+  );
+
+  console.log('Has background access:', hasBackgroundAccess);
+  return hasBackgroundAccess;
+};
 
 export async function fetchSteps() {
   try {
     const permissions = [
       {
-      accessType: 'read',
-      recordType: 'BackgroundAccessPermission',
-    },
+        accessType: 'read',
+        recordType: 'BackgroundAccessPermission',
+      },
       {
         accessType: 'read',
         recordType: 'Steps',
@@ -17,6 +30,8 @@ export async function fetchSteps() {
     ];
 
     const granted = await requestPermission(permissions);
+    const hasBackgroundAccess = await checkBackgroundAccess(); 
+    
     if (!granted) {
       console.warn('⚠️ Steps permission not granted');
       return [];
@@ -33,6 +48,7 @@ export async function fetchSteps() {
         endTime: endTime.toISOString(),
       },
     });
+    
 
     console.log(`📥 Fetched ${response?.records?.length || 0} steps records from Health Connect`);
 

@@ -1,7 +1,7 @@
 import BackgroundFetch from 'react-native-background-fetch';
 import { fetchSteps } from '../health/stepsService';
 import { saveStepsData } from '../db/database';
-import { debugLogAllData } from '../db/helpers';
+import { debugLogAllData,cleanupOldRecords } from '../db/helpers';
 
 
 const USER_ID = 'user_001';
@@ -10,12 +10,18 @@ export async function initBackgroundTask() {
   try {
     BackgroundFetch.configure(
       {
-        minimumFetchInterval: 10,
+        minimumFetchInterval: 1, 
         stopOnTerminate: false,
         startOnBoot: true,
         enableHeadless: true,
         forceAlarmManager: true,
-      },
+        requiredNetworkType: BackgroundFetch.NETWORK_TYPE_ANY,
+        requiresCharging: false,
+        requiresDeviceIdle: false,
+        requiresBatteryNotLow: false,
+        requiresStorageNotLow: false,
+        
+    },
       async taskId => {
         console.log('🔄 Background task:', taskId);
 
@@ -42,13 +48,23 @@ export async function initBackgroundTask() {
           // Show all data in database
           await debugLogAllData();
         }
-
+     
         BackgroundFetch.finish(taskId);
       },
       error => {
         console.error('❌ BackgroundFetch failed:', error);
       },
     );
+
+    // BackgroundFetch.scheduleTask({
+    //   taskId: 'com.healthconnect.steps',
+    //   delay: 1 * 60 * 1000, // 15 minutes  
+    //   periodic: true,
+    //   forceAlarmManager: true,
+    //   stopOnTerminate: false,
+    //   startOnBoot: true,
+    // });
+
   } catch (error) {
     console.error('❌ initBackgroundTask error:', error);
   }
